@@ -1,0 +1,12 @@
+<div class="p-6 max-w-sm mx-auto">
+  <h1 class="text-xl mb-4">Регистрация</h1>
+
+  <input class="border p-2 w-full mb-2" placeholder="Имя" #name />
+  <input class="border p-2 w-full mb-2" placeholder="Email" #email />
+  <input class="border p-2 w-full mb-4" placeholder="Пароль" type="password" #password />
+
+  <button class="bg-green-500 text-white p-2 w-full"
+          (click)="register(name.value, email.value, password.value)">
+    Зарегистрироваться
+  </button>
+</div>

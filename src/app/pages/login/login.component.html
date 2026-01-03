@@ -1,0 +1,11 @@
+    <div class="p-6 max-w-sm mx-auto">
+      <h1 class="text-xl mb-4">Вход</h1>
+
+      <input class="border p-2 w-full mb-2" placeholder="Email" #email />
+      <input class="border p-2 w-full mb-4" placeholder="Пароль" type="password" #password />
+
+      <button class="bg-blue-500 text-white p-2 w-full"
+        (click)="login(email.value, password.value)">
+        Войти
+      </button>
+    </div>
