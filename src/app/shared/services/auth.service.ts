@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map, Observable, tap } from 'rxjs';
 import { Apollo, gql } from 'apollo-angular';
+import { Observable, map } from 'rxjs';
 
-
-interface AuthResponse {
+export interface AuthResponse {
   token: string;
   user: {
     id: string;
@@ -21,37 +19,42 @@ interface LoginMutation {
   login: AuthResponse;
 }
 
+
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   constructor(private apollo: Apollo) {}
 
-  register(name: string, email: string, password: string): Observable<AuthResponse> {
-    const REGISTER_MUTATION = gql`
-      mutation Register($name: String!, $email: String!, $password: String!) {
-        register(name: $name, email: $email, password: $password) {
-          token
-          user {
-            id
-            name
-            email
-          }
+// Регистрация
+register(name: string, email: string, password: string): Observable<AuthResponse> {
+  const REGISTER_MUTATION = gql`
+    mutation Register($name: String!, $email: String!, $password: String!) {
+      register(name: $name, email: $email, password: $password) {
+        token
+        user {
+          id
+          name
+          email
         }
       }
-    `;
+    }
+  `;
 
-    return this.apollo
-      .mutate<RegisterMutation>({
-        mutation: REGISTER_MUTATION,
-        variables: { name, email, password },
+  return this.apollo
+    .mutate<RegisterMutation>({
+      mutation: REGISTER_MUTATION,
+      variables: { name, email, password },
+    })
+    .pipe(
+      map(res => {
+        if (!res.data) throw new Error('No data returned from register mutation');
+        return res.data.register;
       })
-      .pipe(
-        map(res => {
-          if (!res.data) throw new Error('No data returned from register mutation');
-          return res.data.register;
-        })
-      );
-  }
+    );
+}
 
+
+  // Вход
   login(email: string, password: string): Observable<AuthResponse> {
     const LOGIN_MUTATION = gql`
       mutation Login($email: String!, $password: String!) {
@@ -74,8 +77,19 @@ export class AuthService {
       .pipe(
         map(res => {
           if (!res.data) throw new Error('No data returned from login mutation');
+          localStorage.setItem('token', res.data.login.token);
           return res.data.login;
         })
       );
+  }
+
+  // Выход
+  logout(): void {
+    localStorage.removeItem('token');
+  }
+
+  // Получить токен
+  getToken(): string | null {
+    return localStorage.getItem('token');
   }
 }
