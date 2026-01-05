@@ -19,22 +19,20 @@ export class TicketsService {
   constructor(private apollo: Apollo) {}
 
   // Получаем билеты текущего пользователя
-  getTickets(): Observable<Ticket[]> {
-    const GET_TICKETS = gql`
-      query TicketsByUser {
-        ticketsByUser {
-          id
-          title
-          description
-          status
-          updatedAt
-        }
-      }
-    `;
-
+ getTickets(): Observable<Ticket[]> {
     return this.apollo
       .query<TicketsResponse>({
-        query: GET_TICKETS,
+        query: gql`
+          query TicketsByUser {
+            ticketsByUser {
+              id
+              title
+              description
+              status
+              updatedAt
+            }
+          }
+        `,
         fetchPolicy: 'network-only',
       })
       .pipe(

@@ -1,37 +1,86 @@
-import { Component, signal } from '@angular/core';
-import { TicketsService, Ticket } from './tickets.service';
+// import { Component, signal } from '@angular/core';
+// import { TicketsService, Ticket } from './tickets.service';
+// import { CommonModule } from '@angular/common';
+
+// @Component({
+//   selector: 'app-tickets',
+//   standalone: true,
+//   imports: [CommonModule],
+//   templateUrl: './tickets.html',
+//   styleUrls: ['./tickets.css'],
+// })
+// export class TicketsComponent {
+//   tickets: Ticket[] = [];
+//   loading = signal(false);
+//   error = signal('');
+
+//   constructor(private ticketsService: TicketsService) {
+//     this.loadTickets();
+//   }
+
+//   loadTickets() {
+//     this.loading.set(true);
+//     this.error.set('');
+
+//     this.ticketsService.getTickets().subscribe({
+//       next: (tickets) => {
+//         this.tickets = tickets;
+//         this.loading.set(false);
+//       },
+//       error: (err) => {
+//         this.error.set(err.message || 'Ошибка при загрузке билетов');
+//         this.tickets = [];
+//         this.loading.set(false);
+//       },
+//     });
+//   }
+// }
+
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TicketsListComponent } from '../../components/tickets-list/tickets-list.component.ts';
+import { Ticket, TicketsService } from './tickets.service';
 
 @Component({
   selector: 'app-tickets',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TicketsListComponent],
   templateUrl: './tickets.html',
-  styleUrls: ['./tickets.css'],
 })
-export class TicketsComponent {
+export class TicketsComponent implements OnInit {
   tickets: Ticket[] = [];
-  loading = signal(false);
-  error = signal('');
+  loading = true;
+  error = '';
 
-  constructor(private ticketsService: TicketsService) {
+  constructor(
+    private ticketsService: TicketsService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
     this.loadTickets();
   }
 
-  loadTickets() {
-    this.loading.set(true);
-    this.error.set('');
+  loadTickets(): void {
+    this.loading = true;
+    this.error = '';
 
     this.ticketsService.getTickets().subscribe({
-      next: (tickets) => {
+      next: tickets => {
         this.tickets = tickets;
-        this.loading.set(false);
+        this.loading = false;
+
+        this.cdr.detectChanges();
       },
-      error: (err) => {
-        this.error.set(err.message || 'Ошибка при загрузке билетов');
+      error: err => {
+        this.error = err.message || 'Ошибка при загрузке билетов';
+        this.loading = false;
         this.tickets = [];
-        this.loading.set(false);
+
+        this.cdr.detectChanges();
       },
     });
   }
 }
+
+
