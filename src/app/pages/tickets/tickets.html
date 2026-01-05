@@ -3,6 +3,47 @@
   <!-- Заголовок -->
   <h1 class="text-3xl font-bold mb-8 mt-4">Билеты 🎫</h1>
 
+  <div class="flex flex-col items-center bg-gray-100 p-6 min-h-screen w-full">
+
+
+
+
+  <!-- Форма создания нового билета -->
+  <div class="bg-white rounded-2xl shadow-md p-6 w-full max-w-3xl mb-8">
+    <h2 class="text-xl font-semibold mb-4">Создать новый билет</h2>
+    
+    <input
+      type="text"
+      [(ngModel)]="newTitle"
+      placeholder="Название билета"
+      class="border p-2 w-full rounded mb-4"
+    />
+
+    <textarea
+      [(ngModel)]="newDescription"
+      placeholder="Описание билета"
+      class="border p-2 w-full rounded mb-4"
+      rows="3"
+    ></textarea>
+
+      <select
+    [(ngModel)]="newStatus"
+    class="border p-2 w-full rounded mb-4"
+  >
+    <option value="OPEN">OPEN</option>
+    <option value="CLOSED">CLOSED</option>
+  </select>
+
+    <button
+      (click)="createTicket()"
+      class="bg-blue-200 text-blue-800 px-4 py-2 rounded hover:bg-blue-300 transition cursor-pointer"
+    >
+      Создать билет
+    </button>
+  </div>
+
+
+
   <!-- Загрузка -->
   <div *ngIf="loading" class="text-gray-500 mb-6 text-lg">
     Загрузка билетов...
@@ -18,12 +59,16 @@
     У вас пока нет билетов
   </div>
 
- <app-tickets-list
-  *ngIf="tickets.length > 0"
-  [tickets]="tickets"
-  (update)="onUpdateTicket($event)"
-  (delete)="onDeleteTicket($event)"
-></app-tickets-list>
+  <!-- Список билетов -->
+  <app-tickets-list
+    *ngIf="tickets.length > 0"
+    [tickets]="tickets"
+    (update)="onUpdateTicket($event)"
+    (delete)="onDeleteTicket($event)"
+  ></app-tickets-list>
+
+</div>
+
 
 
 </div>

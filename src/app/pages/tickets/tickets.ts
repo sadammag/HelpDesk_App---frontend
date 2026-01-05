@@ -2,11 +2,12 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TicketsListComponent } from '../../components/tickets-list/tickets-list.component.ts';
 import { Ticket, TicketsService } from './tickets.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-tickets',
   standalone: true,
-  imports: [CommonModule, TicketsListComponent],
+  imports: [CommonModule, TicketsListComponent, FormsModule],
   templateUrl: './tickets.html',
 })
 
@@ -14,6 +15,12 @@ export class TicketsComponent implements OnInit {
   tickets: Ticket[] = [];
   loading = true;
   error = '';
+
+  // Для создания нового билета
+  newTitle = '';
+  newDescription = '';
+  newStatus: 'OPEN' | 'IN_PROGRESS' | 'CLOSED' = 'OPEN';
+
 
   constructor(
     private ticketsService: TicketsService,
@@ -24,6 +31,8 @@ export class TicketsComponent implements OnInit {
     this.loadTickets();
   }
 
+
+  // Загрузка билетов
   loadTickets(): void {
     this.loading = true;
     this.error = '';
@@ -46,6 +55,27 @@ export class TicketsComponent implements OnInit {
       },
     });
   }
+
+
+  createTicket() {
+    if (!this.newTitle.trim()) return;
+
+    this.ticketsService.createTicket(this.newTitle, this.newDescription, this.newStatus)
+      .subscribe({
+        next: newTicket => {
+         // this.tickets.unshift(newTicket); // добавляем новый билет в начало списка
+          // очищаем форму
+          this.newTitle = '';
+          this.newDescription = '';
+          this.newStatus = 'OPEN';
+
+               this.loadTickets();
+        },
+        
+        error: err => console.error(err),
+      });
+  }
+
 
 
   onUpdateTicket(updated: Partial<Ticket>) {
@@ -79,8 +109,6 @@ export class TicketsComponent implements OnInit {
       error: err => console.error(err),
     });
   }
-
-
 
 }
 

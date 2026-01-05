@@ -18,7 +18,7 @@ interface TicketsResponse {
 export class TicketsService {
   constructor(private apollo: Apollo) {}
 
-  // Получаем билеты текущего пользователя
+// Получаем билеты текущего пользователя
  getTickets(): Observable<Ticket[]> {
     return this.apollo
       .query<TicketsResponse>({
@@ -41,6 +41,36 @@ export class TicketsService {
   }
 
 
+
+ // Создание нового билета
+  createTicket(title: string, description: string, status:string ): Observable<Ticket> {
+    const CREATE_TICKET = gql`
+      mutation CreateTicket($title: String!, $description: String!, $status: String! ) {
+        createTicket(title: $title, description: $description, status: $status) {
+          id
+          title
+          description
+          status
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+
+    return this.apollo
+      .mutate<{ createTicket: Ticket }>({
+        mutation: CREATE_TICKET,
+        variables: { title, description, status },
+      })
+      .pipe(map(res => {
+        if (!res.data) throw new Error('Ошибка при создании билета');
+        return res.data.createTicket;
+      }));
+  }
+
+
+
+// Редактирование билета
   editTicket(
   id: string,
   title?: string,
@@ -78,7 +108,7 @@ export class TicketsService {
 
 
 
-//  Мутация удаления билета 
+// Удаление билета 
 deleteTicket(id: string): Observable<boolean> {
   const REMOVE_TICKET = gql`
     mutation RemoveTicket($id: String!) {
