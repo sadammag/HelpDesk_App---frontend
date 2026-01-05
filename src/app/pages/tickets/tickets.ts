@@ -81,6 +81,36 @@ export class TicketsComponent implements OnInit {
       },
     });
   }
+
+
+//   onEditTicket(ticketId: string) {
+//   this.ticketsService.editTicket(ticketId, { title: 'Новое название' }).subscribe({
+//     next: updatedTicket => {
+//       // Обновляем локальный массив
+//       const index = this.tickets.findIndex(t => t.id === ticketId);
+//       if (index !== -1) this.tickets[index] = updatedTicket;
+//     },
+//     error: err => console.error(err),
+//   });
+// }
+
+onDeleteTicket(ticketId: string) {
+  this.ticketsService.deleteTicket(ticketId).subscribe({
+    next: success => {
+      if (success) {
+
+        this.loadTickets(); // После удаления сразу обновляем список с сервера
+      } else {
+        console.error('Ошибка при удалении билета');
+      }
+    },
+    error: err => console.error(err),
+  });
 }
+
+
+
+}
+
 
 

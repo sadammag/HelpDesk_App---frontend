@@ -18,11 +18,13 @@
     У вас пока нет билетов
   </div>
 
-  <!-- 👇 ВОТ ЗДЕСЬ ИСПОЛЬЗУЕМ ВЫНЕСЕННЫЙ КОМПОНЕНТ -->
-  <app-tickets-list
-    *ngIf="tickets.length > 0"
-    [tickets]="tickets"
-  ></app-tickets-list>
+ <app-tickets-list
+  *ngIf="tickets.length > 0"
+  [tickets]="tickets"
+  (edit)="onEditTicket($event)"
+  (delete)="onDeleteTicket($event)"
+></app-tickets-list>
+
 
 </div>
 

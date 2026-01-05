@@ -1,7 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Ticket } from '../../pages/tickets/tickets.service';
-//import { Ticket } from '../../services/tickets.service';
 
 @Component({
   selector: 'app-tickets-list',
@@ -11,4 +10,16 @@ import { Ticket } from '../../pages/tickets/tickets.service';
 })
 export class TicketsListComponent {
   @Input() tickets: Ticket[] = [];
+
+  // События для родителя
+  @Output() edit = new EventEmitter<string>();
+  @Output() delete = new EventEmitter<string>();
+
+  editTicket(id: string) {
+    this.edit.emit(id);
+  }
+
+  deleteTicket(id: string) {
+    this.delete.emit(id);
+  }
 }

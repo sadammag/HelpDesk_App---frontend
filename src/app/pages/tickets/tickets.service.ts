@@ -39,4 +39,44 @@ export class TicketsService {
         map(res => res.data?.ticketsByUser ?? [])
       );
   }
+
+
+  //  Редатикрование билета
+  editTicket(id: string, input: { title?: string; description?: string; status?: string }): Observable<Ticket> {
+    const EDIT_TICKET = gql`
+      mutation EditTicket($id: ID!, $input: EditTicketInput!) {
+        editTicket(id: $id, input: $input) {
+          id
+          title
+          description
+          status
+          updatedAt
+        }
+      }
+    `;
+
+    return this.apollo.mutate<{ editTicket: Ticket }>({
+      mutation: EDIT_TICKET,
+      variables: { id, input },
+    }).pipe(map(res => res.data!.editTicket));
+  }
+
+
+
+//  Мутация удаления билета 
+deleteTicket(id: string): Observable<boolean> {
+  const REMOVE_TICKET = gql`
+    mutation RemoveTicket($id: String!) {
+      removeTicket(id: $id)
+    }
+  `;
+
+  return this.apollo.mutate<{ removeTicket: boolean }>({
+    mutation: REMOVE_TICKET,
+    variables: { id },
+  }).pipe(
+    map(res => res.data?.removeTicket ?? false) // возвращаем true/false
+  );
+}
+
 }
