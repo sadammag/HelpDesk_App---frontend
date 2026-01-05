@@ -1,55 +1,91 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-5xl">
   <div
     *ngFor="let ticket of tickets"
-    class="bg-white rounded-2xl shadow-md p-8 flex flex-col justify-between hover:shadow-lg transition-shadow duration-300 min-h-[220px]"
+    class="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between hover:shadow-lg transition-shadow duration-300 min-h-[220px]"
   >
-    <!-- Заголовок -->
-    <h2 class="text-xl font-semibold mb-4">
-      {{ ticket.title }}
-    </h2>
+    <!-- Title -->
+    <div *ngIf="editingTicketId !== ticket.id">
+      <h2 class="text-xl font-semibold mb-2">{{ ticket.title }}</h2>
+    </div>
+    <div *ngIf="editingTicketId === ticket.id">
+      <input
+        type="text"
+        [(ngModel)]="editedTicket.title"
+        class="border p-2 w-full rounded mb-2"
+      />
+    </div>
 
-    <!-- Описание -->
-    <p class="text-gray-700 text-lg mb-4">
-      {{ ticket.description }}
-    </p>
+    <!-- Description -->
+    <div *ngIf="editingTicketId !== ticket.id">
+      <p class="text-gray-700 mb-2">{{ ticket.description }}</p>
+    </div>
+    <div *ngIf="editingTicketId === ticket.id">
+      <textarea
+        [(ngModel)]="editedTicket.description"
+        class="border p-2 w-full rounded mb-2"
+        rows="3"
+      ></textarea>
+    </div>
 
-    <!-- Статус -->
-    <p class="text-gray-500 mb-4 text-lg">
-      Статус:
-      <span
-        [ngClass]="{
+    <!-- Status -->
+    <div *ngIf="editingTicketId !== ticket.id">
+      <p class="text-gray-500 mb-2">
+        Статус:
+        <span [ngClass]="{
           'text-green-500': ticket.status === 'OPEN',
           'text-yellow-500': ticket.status === 'IN_PROGRESS',
           'text-red-500': ticket.status === 'CLOSED'
-        }"
-      >
-        {{ ticket.status }}
-      </span>
-    </p>
+        }">
+          {{ ticket.status }}
+        </span>
+      </p>
+    </div>
+    <div *ngIf="editingTicketId === ticket.id">
+      <select [(ngModel)]="editedTicket.status" class="border p-2 w-full rounded mb-2">
+        <option value="OPEN">OPEN</option>
+        <option value="CLOSED">CLOSED</option>
+      </select>
+    </div>
 
-    <!-- Дата -->
-    <p class="text-gray-400 text-base mb-4">
-      Обновлено: {{ ticket.updatedAt | date: 'dd.MM.yyyy HH:mm' }}
+    <!-- UpdatedAt -->
+    <p class="text-gray-400 text-sm">
+      Обновлено: {{ ticket.updatedAt | date:'dd.MM.yyyy HH:mm' }}
     </p>
 
     <!-- Кнопки -->
-    <div class="flex gap-2 mt-4">
+    <div class="flex justify-end mt-4 space-x-2">
       <button
-        class="bg-blue-200 text-blue-800 px-3 py-1.5 rounded text-sm hover:bg-blue-300 transition w-full sm:w-auto"
-        (click)="editTicket(ticket.id)"
+        *ngIf="editingTicketId !== ticket.id"
+        class="bg-blue-200 text-blue-800 px-3 py-1 rounded hover:bg-blue-300 cursor-pointer"
+        (click)="startEdit(ticket)"
       >
         Редактировать
       </button>
-
       <button
-        class="bg-pink-200 text-pink-800 px-3 py-1.5 rounded text-sm hover:bg-pink-300 transition w-full sm:w-auto"
+        *ngIf="editingTicketId === ticket.id"
+        class="bg-green-200 text-green-800 px-3 py-1 rounded hover:bg-green-300 cursor-pointer"
+        (click)="saveEdit()"
+      >
+        Сохранить
+      </button>
+      <button
+        *ngIf="editingTicketId === ticket.id"
+        class="bg-gray-200 text-gray-800 px-3 py-1 rounded hover:bg-gray-300 cursor-pointer"
+        (click)="cancelEdit()"
+      >
+        Отмена
+      </button>
+      <button
+        class="bg-pink-200 text-pink-800 px-3 py-1 rounded hover:bg-pink-300 cursor-pointer"
         (click)="deleteTicket(ticket.id)"
       >
         Удалить
       </button>
     </div>
-
-
   </div>
 </div>
+
+
+
+
 

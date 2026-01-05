@@ -41,25 +41,40 @@ export class TicketsService {
   }
 
 
-  //  Редатикрование билета
-  editTicket(id: string, input: { title?: string; description?: string; status?: string }): Observable<Ticket> {
-    const EDIT_TICKET = gql`
-      mutation EditTicket($id: ID!, $input: EditTicketInput!) {
-        editTicket(id: $id, input: $input) {
-          id
-          title
-          description
-          status
-          updatedAt
-        }
+  editTicket(
+  id: string,
+  title?: string,
+  description?: string,
+  status?: string
+): Observable<Ticket> {
+  const EDIT_TICKET = gql`
+    mutation EditTicket(
+      $id: String!
+      $title: String
+      $description: String
+      $status: String
+    ) {
+      editTicket(id: $id, title: $title, description: $description, status: $status) {
+        id
+        title
+        description
+        status
+        updatedAt
       }
-    `;
+    }
+  `;
 
-    return this.apollo.mutate<{ editTicket: Ticket }>({
+  return this.apollo
+    .mutate<{ editTicket: Ticket }>({
       mutation: EDIT_TICKET,
-      variables: { id, input },
-    }).pipe(map(res => res.data!.editTicket));
-  }
+      variables: { id, title, description, status },
+    })
+    .pipe(map(res => {
+      if (!res.data) throw new Error('No data returned from editTicket mutation');
+      return res.data.editTicket;
+    }));
+}
+
 
 
 
