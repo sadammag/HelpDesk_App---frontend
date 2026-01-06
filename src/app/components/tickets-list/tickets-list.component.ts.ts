@@ -9,7 +9,6 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
   templateUrl: './tickets-list.html',
 })
-
 export class TicketsListComponent {
   @Input() tickets: Ticket[] = [];
 
@@ -21,8 +20,7 @@ export class TicketsListComponent {
   editingTicketId: string | null = null;
   editedTicket: Partial<Ticket> = {};
 
-
-   startEdit(ticket: Ticket) {
+  startEdit(ticket: Ticket) {
     this.editingTicketId = ticket.id;
     this.editedTicket = { ...ticket };
   }
@@ -32,7 +30,7 @@ export class TicketsListComponent {
     if (this.editingTicketId) {
       this.update.emit({
         id: this.editingTicketId,
-        ...this.editedTicket
+        ...this.editedTicket,
       } as Ticket);
       this.editingTicketId = null;
       this.editedTicket = {};

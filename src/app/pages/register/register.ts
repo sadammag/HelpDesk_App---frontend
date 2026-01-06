@@ -12,10 +12,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   // Метод для регистрации пользователя
   register(name: string, email: string, password: string) {
@@ -32,7 +29,7 @@ export class RegisterComponent {
       error: (err: any) => {
         console.error('Ошибка регистрации:', err);
         alert(err.message || 'Ошибка при регистрации');
-      }
+      },
     });
   }
 }

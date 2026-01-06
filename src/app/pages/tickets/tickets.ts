@@ -10,7 +10,6 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, TicketsListComponent, FormsModule],
   templateUrl: './tickets.html',
 })
-
 export class TicketsComponent implements OnInit {
   tickets: Ticket[] = [];
   loading = true;
@@ -21,32 +20,27 @@ export class TicketsComponent implements OnInit {
   newDescription = '';
   newStatus: 'OPEN' | 'IN_PROGRESS' | 'CLOSED' = 'OPEN';
 
-
-  constructor(
-    private ticketsService: TicketsService,
-    private cdr: ChangeDetectorRef
-  ) {}
+  constructor(private ticketsService: TicketsService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadTickets();
   }
-
 
   // Загрузка билетов
   loadTickets(): void {
     this.loading = true;
     this.error = '';
 
-    console.log('ВЫЗОВ ФУНКЦИИ   loadTickets()')
+    console.log('ВЫЗОВ ФУНКЦИИ   loadTickets()');
 
     this.ticketsService.getTickets().subscribe({
-      next: tickets => {
+      next: (tickets) => {
         this.tickets = tickets;
         this.loading = false;
 
         this.cdr.detectChanges();
       },
-      error: err => {
+      error: (err) => {
         this.error = err.message || 'Ошибка при загрузке билетов';
         this.loading = false;
         this.tickets = [];
@@ -56,61 +50,54 @@ export class TicketsComponent implements OnInit {
     });
   }
 
-
+  // Создание билета
   createTicket() {
     if (!this.newTitle.trim()) return;
 
-    this.ticketsService.createTicket(this.newTitle, this.newDescription, this.newStatus)
-      .subscribe({
-        next: newTicket => {
-         // this.tickets.unshift(newTicket); // добавляем новый билет в начало списка
-          // очищаем форму
-          this.newTitle = '';
-          this.newDescription = '';
-          this.newStatus = 'OPEN';
+    this.ticketsService.createTicket(this.newTitle, this.newDescription, this.newStatus).subscribe({
+      next: (newTicket) => {
+        // this.tickets.unshift(newTicket); // добавляем новый билет в начало списка
+        // очищаем форму
+        this.newTitle = '';
+        this.newDescription = '';
+        this.newStatus = 'OPEN';
 
-               this.loadTickets();
-        },
-        
-        error: err => console.error(err),
-      });
+        this.loadTickets();
+      },
+
+      error: (err) => console.error(err),
+    });
   }
 
-
-
+  // Обновление билета
   onUpdateTicket(updated: Partial<Ticket>) {
     this.ticketsService
       .editTicket(updated.id!, updated.title, updated.description, updated.status)
       .subscribe({
-        next: updatedTicket => {
-          console.log(updatedTicket,'- обновленный билет')
-
-           //this.tickets = this.tickets.map(t =>
-           //t.id === updatedTicket.id ? updatedTicket : t);
+        next: (updatedTicket) => {
+          console.log(updatedTicket, '- обновленный билет');
+          //this.tickets = this.tickets.map(t =>
+          //t.id === updatedTicket.id ? updatedTicket : t);
           this.loadTickets();
-    },
-    
-        error: err => console.error(err),
+        },
+
+        error: (err) => console.error(err),
       });
   }
 
-
+  // Удаление билета
   onDeleteTicket(ticketId: string) {
     this.ticketsService.deleteTicket(ticketId).subscribe({
-      next: success => {
+      next: (success) => {
         if (success) {
           this.loadTickets(); // После удаления сразу обновляем список с сервера
         } else {
           console.error('Ошибка при удалении билета');
         }
 
-        this.loadTickets()
+        this.loadTickets();
       },
-      error: err => console.error(err),
+      error: (err) => console.error(err),
     });
   }
-
 }
-
-
-

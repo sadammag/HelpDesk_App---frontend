@@ -31,7 +31,7 @@ export const authGuard: CanActivateFn = async () => {
         query: CURRENT_USER_QUERY,
         context: {
           headers: new HttpHeaders({
-            Authorization: `Bearer ${token}`,  // Вернуться к этому участку
+            Authorization: `Bearer ${token}`, // Вернуться к этому участку
           }),
         },
         fetchPolicy: 'network-only', // всегда проверяем сервер

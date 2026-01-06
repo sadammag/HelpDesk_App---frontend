@@ -6,7 +6,7 @@ import { AuthService } from './shared/services/auth.service';
   selector: 'app-root',
   imports: [RouterOutlet, RouterLink],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('frontend');
