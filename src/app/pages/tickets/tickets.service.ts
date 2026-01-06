@@ -30,6 +30,12 @@ export class TicketsService {
               description
               status
               updatedAt
+              logs {
+                ticketId
+                authorId
+                message
+                createdAt
+              }
             }
           }
         `,
@@ -49,6 +55,12 @@ export class TicketsService {
           status
           createdAt
           updatedAt
+          logs {
+            ticketId
+            authorId
+            message
+            createdAt
+          }
         }
       }
     `;
