@@ -2,12 +2,20 @@ import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, map } from 'rxjs';
 
+export interface TicketLog {
+  ticketId: string;
+  authorId: string;
+  message: string;
+  createdAt: string;
+}
+
 export interface Ticket {
   id: string;
   title?: string;
   status?: string;
   description?: string;
   updatedAt?: string;
+  logs?: TicketLog[];
 }
 
 interface TicketsResponse {

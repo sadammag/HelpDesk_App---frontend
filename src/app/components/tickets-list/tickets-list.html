@@ -14,7 +14,8 @@
       <input
         type="text"
         [(ngModel)]="editedTicket.title"
-        class="border p-2 w-full rounded mb-2 text-sm"
+        class="border p-1 w-full rounded mb-1 text-sm"
+        placeholder="Название"
       />
     </div>
 
@@ -28,8 +29,10 @@
     <div *ngIf="editingTicketId === ticket.id">
       <textarea
         [(ngModel)]="editedTicket.description"
-        class="border p-2 w-full rounded mb-2 text-sm"
-        rows="3"
+        class="border p-1 w-full rounded mb-1 text-sm"
+        rows="1"
+        placeholder="Описание"
+        (input)="autoResize($event)"
       ></textarea>
     </div>
 
@@ -51,10 +54,47 @@
     </div>
 
     <div *ngIf="editingTicketId === ticket.id">
-      <select [(ngModel)]="editedTicket.status" class="border p-2 w-full rounded mb-2 text-sm">
+      <select [(ngModel)]="editedTicket.status" class="border p-1 w-full rounded mb-1 text-sm">
         <option value="OPEN">OPEN</option>
         <option value="CLOSED">CLOSED</option>
       </select>
+    </div>
+
+    <!-- Logs / Комментарии -->
+    <div class="mt-3">
+      <h3 class="text-sm font-semibold text-gray-600 mb-2">Комментарий</h3>
+
+      <!-- Режим просмотра -->
+      <div *ngIf="editingTicketId !== ticket.id">
+        <div *ngIf="ticket.logs?.length; else noLogsView">
+          <!-- Светло-серый блок для логов -->
+          <div class="bg-gray-100 p-1 rounded mb-2">
+            <div *ngFor="let log of ticket.logs" class="text-gray-700 mb-1 break-words text-sm">
+              {{ log.message }}
+            </div>
+          </div>
+        </div>
+        <ng-template #noLogsView>
+          <p class="text-xs text-gray-400 italic mb-2">Комментариев пока нет</p>
+        </ng-template>
+      </div>
+
+      <!-- Режим редактирования -->
+      <div *ngIf="editingTicketId === ticket.id">
+        <div *ngIf="editedTicket.logs?.length; else noLogsEdit" class="mb-2">
+          <div *ngFor="let log of editedTicket.logs" class="mb-2">
+            <textarea
+              [(ngModel)]="log.message"
+              class="border rounded p-1 w-full text-sm"
+              rows="1"
+              placeholder="Комментарий"
+            ></textarea>
+          </div>
+        </div>
+        <ng-template #noLogsEdit>
+          <p class="text-xs text-gray-400 italic mb-2">Комментариев пока нет</p>
+        </ng-template>
+      </div>
     </div>
 
     <!-- UpdatedAt -->
