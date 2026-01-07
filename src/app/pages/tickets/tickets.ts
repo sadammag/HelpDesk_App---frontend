@@ -19,6 +19,7 @@ export class TicketsComponent implements OnInit {
   newTitle = '';
   newDescription = '';
   newStatus: 'OPEN' | 'IN_PROGRESS' | 'CLOSED' = 'OPEN';
+  newMessage: string = '';
 
   constructor(private ticketsService: TicketsService, private cdr: ChangeDetectorRef) {}
 
@@ -53,20 +54,21 @@ export class TicketsComponent implements OnInit {
   // Создание билета
   createTicket() {
     if (!this.newTitle.trim()) return;
+    console.log(this.newTitle, this.newDescription, this.newStatus, `строка - ${this.newMessage}`);
+    this.ticketsService
+      .createTicket(this.newTitle, this.newDescription, this.newStatus, this.newMessage)
+      .subscribe({
+        next: (newTicket) => {
+          this.newTitle = '';
+          this.newDescription = '';
+          this.newStatus = 'OPEN';
+          this.newMessage = '';
 
-    this.ticketsService.createTicket(this.newTitle, this.newDescription, this.newStatus).subscribe({
-      next: (newTicket) => {
-        // this.tickets.unshift(newTicket); // добавляем новый билет в начало списка
-        // очищаем форму
-        this.newTitle = '';
-        this.newDescription = '';
-        this.newStatus = 'OPEN';
+          this.loadTickets();
+        },
 
-        this.loadTickets();
-      },
-
-      error: (err) => console.error(err),
-    });
+        error: (err) => console.error(err),
+      });
   }
 
   // Обновление билета
@@ -75,9 +77,6 @@ export class TicketsComponent implements OnInit {
       .editTicket(updated.id!, updated.title, updated.description, updated.status)
       .subscribe({
         next: (updatedTicket) => {
-          console.log(updatedTicket, '- обновленный билет');
-          //this.tickets = this.tickets.map(t =>
-          //t.id === updatedTicket.id ? updatedTicket : t);
           this.loadTickets();
         },
 
@@ -90,7 +89,7 @@ export class TicketsComponent implements OnInit {
     this.ticketsService.deleteTicket(ticketId).subscribe({
       next: (success) => {
         if (success) {
-          this.loadTickets(); // После удаления сразу обновляем список с сервера
+          this.loadTickets();
         } else {
           console.error('Ошибка при удалении билета');
         }

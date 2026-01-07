@@ -28,6 +28,13 @@
           <option value="CLOSED">CLOSED</option>
         </select>
 
+        <textarea
+          [(ngModel)]="newMessage"
+          placeholder="Комментарий"
+          class="border p-2 w-full rounded mb-4 text-base"
+          rows="2"
+        ></textarea>
+
         <div class="flex justify-center">
           <button
             (click)="createTicket()"

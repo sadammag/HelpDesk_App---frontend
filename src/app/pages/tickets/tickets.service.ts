@@ -53,10 +53,20 @@ export class TicketsService {
   }
 
   // Создание нового билета
-  createTicket(title: string, description: string, status: string): Observable<Ticket> {
+  createTicket(
+    title: string,
+    description: string,
+    status: string,
+    message: string
+  ): Observable<Ticket> {
     const CREATE_TICKET = gql`
-      mutation CreateTicket($title: String!, $description: String!, $status: String!) {
-        createTicket(title: $title, description: $description, status: $status) {
+      mutation CreateTicket(
+        $title: String!
+        $description: String!
+        $status: String!
+        $message: String!
+      ) {
+        createTicket(title: $title, description: $description, status: $status, message: $message) {
           id
           title
           description
@@ -76,7 +86,7 @@ export class TicketsService {
     return this.apollo
       .mutate<{ createTicket: Ticket }>({
         mutation: CREATE_TICKET,
-        variables: { title, description, status },
+        variables: { title, description, status, message },
       })
       .pipe(
         map((res) => {

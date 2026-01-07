@@ -61,4 +61,8 @@ export class TicketsListComponent {
     el.style.height = 'auto';
     el.style.height = el.scrollHeight + 'px';
   }
+
+  hasLogs(ticket: Ticket): boolean {
+    return !!ticket.logs?.some((log) => log.message && log.message.trim() !== '');
+  }
 }
