@@ -15,7 +15,9 @@ export interface Ticket {
   status?: string;
   description?: string;
   updatedAt?: string;
+  //logs?: TicketLog[];
   logs?: TicketLog[];
+  message?: string;
 }
 
 interface TicketsResponse {
@@ -101,11 +103,24 @@ export class TicketsService {
     id: string,
     title?: string,
     description?: string,
-    status?: string
+    status?: string,
+    message?: string
   ): Observable<Ticket> {
     const EDIT_TICKET = gql`
-      mutation EditTicket($id: String!, $title: String, $description: String, $status: String) {
-        editTicket(id: $id, title: $title, description: $description, status: $status) {
+      mutation EditTicket(
+        $id: String!
+        $title: String
+        $description: String
+        $status: String
+        $message: String
+      ) {
+        editTicket(
+          id: $id
+          title: $title
+          description: $description
+          status: $status
+          message: $message
+        ) {
           id
           title
           description
@@ -118,11 +133,19 @@ export class TicketsService {
     return this.apollo
       .mutate<{ editTicket: Ticket }>({
         mutation: EDIT_TICKET,
-        variables: { id, title, description, status },
+        variables: {
+          id,
+          title,
+          description,
+          status,
+          message,
+        },
       })
       .pipe(
         map((res) => {
-          if (!res.data) throw new Error('No data returned from editTicket mutation');
+          if (!res.data) {
+            throw new Error('No data returned from editTicket mutation');
+          }
           return res.data.editTicket;
         })
       );

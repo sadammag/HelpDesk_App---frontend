@@ -1,8 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TicketsListComponent } from '../../components/tickets-list/tickets-list.component.ts';
+//import { TicketsListComponent } from '../../components/tickets-list/tickets-list.component.ts';
 import { Ticket, TicketsService } from './tickets.service';
 import { FormsModule } from '@angular/forms';
+import { TicketsListComponent } from '../../components/tickets-list/tickets-list.component';
 
 @Component({
   selector: 'app-tickets',
@@ -31,8 +32,6 @@ export class TicketsComponent implements OnInit {
   loadTickets(): void {
     this.loading = true;
     this.error = '';
-
-    console.log('ВЫЗОВ ФУНКЦИИ   loadTickets()');
 
     this.ticketsService.getTickets().subscribe({
       next: (tickets) => {
@@ -73,8 +72,9 @@ export class TicketsComponent implements OnInit {
 
   // Обновление билета
   onUpdateTicket(updated: Partial<Ticket>) {
+    console.log('Сработка метода - onUpdateTicket');
     this.ticketsService
-      .editTicket(updated.id!, updated.title, updated.description, updated.status)
+      .editTicket(updated.id!, updated.title, updated.description, updated.status, updated.message)
       .subscribe({
         next: (updatedTicket) => {
           this.loadTickets();

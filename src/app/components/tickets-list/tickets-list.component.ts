@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Ticket, TicketLog } from '../../pages/tickets/tickets.service';
 import { FormsModule } from '@angular/forms';
 
+interface EditableTicket extends Partial<Ticket> {
+  message?: string;
+}
+
 @Component({
   selector: 'app-tickets-list',
   standalone: true,
@@ -12,36 +16,34 @@ import { FormsModule } from '@angular/forms';
 export class TicketsListComponent {
   @Input() tickets: Ticket[] = [];
 
-  // События для родителя
-  @Output() update = new EventEmitter<Ticket>();
+  @Output() update = new EventEmitter<EditableTicket>();
   @Output() delete = new EventEmitter<string>();
 
   // Локальное состояние редактирования
   editingTicketId: string | null = null;
-  editedTicket: Partial<Ticket> = {};
-  //____________________________________________________________________
-  // Для редактирования конкретного лога
+  editedTicket: EditableTicket = {};
   editingLogId: string | null = null;
   editedLog: Partial<TicketLog> = {};
-  // Если нужно, можно хранить временные значения для всех логов билета
-  editedLogs: { [ticketId: string]: TicketLog[] } = {};
-  //____________________________________________________________________
 
   startEdit(ticket: Ticket) {
     this.editingTicketId = ticket.id;
-    //this.editedTicket = { ...ticket };
     this.editedTicket = {
-      ...ticket,
-      logs: ticket.logs ? [...ticket.logs] : [],
+      id: ticket.id,
+      title: ticket.title,
+      description: ticket.description,
+      status: ticket.status,
+      message: ticket.logs?.[0]?.message ?? '',
     };
   }
 
   saveEdit() {
+    console.log('Что хранится в this.editedTicket - ', this.editedTicket);
     if (this.editingTicketId) {
       this.update.emit({
         id: this.editingTicketId,
         ...this.editedTicket,
       } as Ticket);
+
       this.editingTicketId = null;
       this.editedTicket = {};
     }

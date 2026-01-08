@@ -80,20 +80,17 @@
       </div>
 
       <!-- Режим редактирования -->
-      <div *ngIf="editingTicketId === ticket.id">
-        <div *ngIf="editedTicket.logs?.length; else noLogsEdit" class="mb-2">
-          <div *ngFor="let log of editedTicket.logs" class="mb-2">
-            <textarea
-              [(ngModel)]="log.message"
-              class="border rounded p-1 w-full text-sm"
-              rows="1"
-              placeholder="Комментарий"
-            ></textarea>
-          </div>
-        </div>
-        <ng-template #noLogsEdit>
-          <p class="text-xs text-gray-400 italic mb-2">Комментариев пока нет</p>
-        </ng-template>
+      <div *ngIf="editingTicketId === ticket.id" class="mb-2">
+        <textarea
+          [(ngModel)]="editedTicket.message"
+          class="border rounded p-1 w-full text-sm"
+          rows="2"
+          placeholder="Комментарий"
+        ></textarea>
+
+        <p *ngIf="!editedTicket.message" class="text-xs text-gray-400 italic mt-1">
+          Комментарий пока пуст
+        </p>
       </div>
     </div>
 
