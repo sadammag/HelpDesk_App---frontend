@@ -29,12 +29,12 @@ export class TicketsService {
   constructor(private apollo: Apollo) {}
 
   // Получаем билеты текущего пользователя
-  getTickets(): Observable<Ticket[]> {
+  getTickets(search?: string): Observable<Ticket[]> {
     return this.apollo
       .query<TicketsResponse>({
         query: gql`
-          query TicketsByUser {
-            ticketsByUser {
+          query TicketsByUser($search: String) {
+            ticketsByUser(search: $search) {
               id
               title
               description
@@ -49,6 +49,7 @@ export class TicketsService {
             }
           }
         `,
+        variables: { search: search || null }, // если пусто, передаем null
         fetchPolicy: 'network-only',
       })
       .pipe(map((res) => res.data?.ticketsByUser ?? []));

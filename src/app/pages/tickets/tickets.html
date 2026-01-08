@@ -2,6 +2,37 @@
   <!-- Заголовок -->
   <h1 class="text-3xl font-bold mb-8 mt-4">Билеты 🎫</h1>
 
+  <!-- Поле поиска -->
+  <div class="w-full max-w-7xl px-6 mb-6 flex items-center relative">
+    <!-- Поле поиска -->
+    <div class="relative flex-1">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        placeholder="Поиск по названию билета"
+        class="w-full border p-2 rounded text-base pr-10 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        (keyup.enter)="onSearch()"
+      />
+
+      <!-- Крестик для очистки -->
+      <button
+        *ngIf="searchTerm"
+        (click)="clearSearch()"
+        class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-700"
+        aria-label="Очистить поиск"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Кнопка "Найти" -->
+    <button
+      (click)="onSearch()"
+      class="ml-2 bg-blue-200 text-blue-800 px-4 py-2 rounded hover:bg-blue-300 transition"
+    >
+      Найти
+    </button>
+  </div>
   <!-- Основной контейнер -->
   <div class="flex w-full max-w-7xl gap-10 px-6">
     <!-- Левая колонка — форма, остаётся сверху -->

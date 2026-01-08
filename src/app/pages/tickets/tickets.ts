@@ -29,25 +29,37 @@ export class TicketsComponent implements OnInit {
   }
 
   // Загрузка билетов
+  // tickets.component.ts
+  searchTerm: string = '';
+
   loadTickets(): void {
     this.loading = true;
     this.error = '';
 
-    this.ticketsService.getTickets().subscribe({
+    this.ticketsService.getTickets(this.searchTerm).subscribe({
       next: (tickets) => {
         this.tickets = tickets;
         this.loading = false;
-
         this.cdr.detectChanges();
       },
       error: (err) => {
         this.error = err.message || 'Ошибка при загрузке билетов';
         this.loading = false;
         this.tickets = [];
-
         this.cdr.detectChanges();
       },
     });
+  }
+
+  // Вызываем после изменения searchTerm, например по кнопке или debounce
+  onSearch(): void {
+    this.loadTickets();
+  }
+
+  // Очистка поля поиска и обновление списка
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.onSearch(); // обновляем список сразу
   }
 
   // Создание билета
